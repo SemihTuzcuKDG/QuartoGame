@@ -18,12 +18,7 @@ public class InfoScreenPresenter {
         this.view = view;
         this.uiSettings = uiSettings;
         view.getInfoText().setText(ReadInfoFromFile());
-        view.getBtnOk().setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                view.getScene().getWindow().hide();
-            }
-        });
+        view.getBtnOk().setOnAction(event -> view.getScene().getWindow().hide());
     }
 
     private String ReadInfoFromFile() {

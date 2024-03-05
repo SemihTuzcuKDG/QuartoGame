@@ -40,9 +40,7 @@ public class MainScreenPresenter {
      }
 
     private void EventHandlers() {
-        view.getSettingsItem().setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
+        view.getSettingsItem().setOnAction(event -> {
                 SettingsView settingsView = new SettingsView(uiSettings);
                 SettingsPresenter presenter = new SettingsPresenter(model, settingsView, uiSettings);
                 Stage settingsStage = new Stage();
@@ -81,11 +79,8 @@ public class MainScreenPresenter {
                         // do nothing, if toURL-conversion fails, program can continue
                     }
                 }
-            }
         });
-        view.getLoadItem().setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
+        view.getLoadItem().setOnAction(event -> {
                 FileChooser fileChooser = new FileChooser();
                 fileChooser.setTitle("Load Data File");
                 fileChooser.getExtensionFilters().addAll(
@@ -110,50 +105,41 @@ public class MainScreenPresenter {
                     errorWindow.setContentText("File is not readable");
                     errorWindow.showAndWait();
                 }
-            }
         });
-        view.getSaveItem().setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                FileChooser fileChooser = new FileChooser();
-                fileChooser.setTitle("Save Data File");
-                fileChooser.getExtensionFilters().addAll(
-                        new FileChooser.ExtensionFilter("Textfiles", "*.txt"),
-                        new FileChooser.ExtensionFilter("All Files", "*.*"));
-                File selectedFile = fileChooser.showSaveDialog(view.getScene().getWindow());
-                if ((selectedFile != null) ^ (Files.isWritable(Paths.get(selectedFile.toURI())))) {
-                    try {
-                        Files.deleteIfExists(Paths.get(selectedFile.toURI()));
-                    } catch (IOException e) {
-                        //
-                    }
-                    try (Formatter output = new Formatter(selectedFile)) {
-                        // Start implementation write data coming from the model
-                        output.format("%s%n", "Here comes the data!");
-                        output.format("%s%n", "First record");
-                        output.format("%s%n", "...");
-                        output.format("%s%n", "Last record");
-                        // End implementation write data coming from the model
-                    } catch (IOException e) {
-                        //
-                    }
-                } else {
-                    Alert errorWindow = new Alert(Alert.AlertType.ERROR);
-                    errorWindow.setHeaderText("Problem with the selected output file:");
-                    errorWindow.setContentText("File is not writable");
-                    errorWindow.showAndWait();
+        view.getSaveItem().setOnAction(event -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save Data File");
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("Textfiles", "*.txt"),
+                    new FileChooser.ExtensionFilter("All Files", "*.*"));
+            File selectedFile = fileChooser.showSaveDialog(view.getScene().getWindow());
+            if ((selectedFile != null) ^ (Files.isWritable(Paths.get(selectedFile.toURI())))) {
+                try {
+                    Files.deleteIfExists(Paths.get(selectedFile.toURI()));
+                } catch (IOException e) {
+                    //
                 }
+                try (Formatter output = new Formatter(selectedFile)) {
+                    // Start implementation write data coming from the model
+                    output.format("%s%n", "Here comes the data!");
+                    output.format("%s%n", "First record");
+                    output.format("%s%n", "...");
+                    output.format("%s%n", "Last record");
+                    // End implementation write data coming from the model
+                } catch (IOException e) {
+                    //
+                }
+            } else {
+                Alert errorWindow = new Alert(Alert.AlertType.ERROR);
+                errorWindow.setHeaderText("Problem with the selected output file:");
+                errorWindow.setContentText("File is not writable");
+                errorWindow.showAndWait();
             }
-        });
-        view.getExitItem().setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                handleCloseEvent(event);
-            }
-        });
-        view.getAboutItem().setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
+
+                });
+        view.getExitItem().setOnAction(event -> handleCloseEvent(event));
+
+        view.getAboutItem().setOnAction(event -> {
                 AboutScreenView aboutScreenView = new AboutScreenView(uiSettings);
                 AboutScreenPresenter aboutScreenPresenter = new AboutScreenPresenter(model, aboutScreenView, uiSettings);
                 Stage aboutScreenStage = new Stage();
@@ -183,10 +169,8 @@ public class MainScreenPresenter {
                     }
                 }
                 aboutScreenStage.showAndWait();
-            }});
-        view.getInfoItem().setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
+        });
+        view.getInfoItem().setOnAction(event -> {
                 InfoScreenView infoScreenView = new InfoScreenView(uiSettings);
                 InfoScreenPresenter infoScreenPresenter = new InfoScreenPresenter(model, infoScreenView, uiSettings);
                 Stage infoScreenStage = new Stage();
@@ -218,13 +202,11 @@ public class MainScreenPresenter {
                     }
                 }
                 infoScreenStage.showAndWait();
-            }});
+        });
     }
 
     public void windowsHandler() {
-        view.getScene().getWindow().setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent event) { handleCloseEvent(event); }});
+        view.getScene().getWindow().setOnCloseRequest(event -> handleCloseEvent(event));
     }
 
     private void handleCloseEvent(Event event){
