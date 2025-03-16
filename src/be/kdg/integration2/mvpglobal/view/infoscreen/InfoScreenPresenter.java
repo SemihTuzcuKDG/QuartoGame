@@ -1,7 +1,7 @@
-package mvpglobal.view.infoscreen;
+package be.kdg.integration2.mvpglobal.view.infoscreen;
 
-import mvpglobal.model.MVPModel;
-import mvpglobal.view.UISettings;
+import be.kdg.integration2.mvpglobal.model.MVPModel;
+import be.kdg.integration2.mvpglobal.view.UISettings;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import java.io.*;

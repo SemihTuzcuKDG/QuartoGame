@@ -1,6 +1,6 @@
-package mvpglobal.view.infoscreen;
+package be.kdg.integration2.mvpglobal.view.infoscreen;
 
-import mvpglobal.view.UISettings;
+import be.kdg.integration2.mvpglobal.view.UISettings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;

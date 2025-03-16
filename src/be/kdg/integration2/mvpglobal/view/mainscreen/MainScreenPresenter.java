@@ -1,10 +1,10 @@
-package mvpglobal.view.mainscreen;
+package be.kdg.integration2.mvpglobal.view.mainscreen;
 
-import mvpglobal.model.*;
-import mvpglobal.view.aboutscreen.*;
-import mvpglobal.view.infoscreen.*;
-import mvpglobal.view.settingsscreen.*;
-import mvpglobal.view.UISettings;
+import be.kdg.integration2.mvpglobal.model.*;
+import be.kdg.integration2.mvpglobal.view.aboutscreen.*;
+import be.kdg.integration2.mvpglobal.view.infoscreen.*;
+import be.kdg.integration2.mvpglobal.view.settingsscreen.*;
+import be.kdg.integration2.mvpglobal.view.UISettings;
 import javafx.event.*;
 import javafx.scene.*;
 import javafx.scene.control.Alert;
@@ -40,9 +40,13 @@ public class MainScreenPresenter {
      }
 
     private void EventHandlers() {
+        view.getTestButton().setOnAction (event -> {
+            GameSession gameSession = new GameSession();
+            gameSession.play();
+        }); // just test code, needs another proper place in your code!!
         view.getSettingsItem().setOnAction(event -> {
                 SettingsView settingsView = new SettingsView(uiSettings);
-                SettingsPresenter presenter = new SettingsPresenter(model, settingsView, uiSettings);
+                SettingsPresenter presenter = new SettingsPresenter(this.model, settingsView, uiSettings);
                 Stage settingsStage = new Stage();
                 settingsStage.setTitle("Settings");
                 settingsStage.initOwner(view.getScene().getWindow());

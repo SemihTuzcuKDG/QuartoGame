@@ -1,6 +1,6 @@
-package mvpglobal.view.startscreen;
+package be.kdg.integration2.mvpglobal.view.startscreen;
 
-import mvpglobal.view.UISettings;
+import be.kdg.integration2.mvpglobal.view.UISettings;
 import javafx.geometry.Insets;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;

@@ -1,8 +1,8 @@
-package mvpglobal.view.aboutscreen;
+package be.kdg.integration2.mvpglobal.view.aboutscreen;
 
 import java.net.MalformedURLException;
 import java.nio.file.Files;
-import mvpglobal.view.UISettings;
+import be.kdg.integration2.mvpglobal.view.UISettings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;

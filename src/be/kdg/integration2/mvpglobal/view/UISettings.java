@@ -1,4 +1,4 @@
-package mvpglobal.view;
+package be.kdg.integration2.mvpglobal.view;
 
 import javafx.stage.Screen;
 

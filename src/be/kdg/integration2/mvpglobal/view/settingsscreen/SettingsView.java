@@ -1,6 +1,6 @@
-package mvpglobal.view.settingsscreen;
+package be.kdg.integration2.mvpglobal.view.settingsscreen;
 
-import mvpglobal.view.UISettings;
+import be.kdg.integration2.mvpglobal.view.UISettings;
 import javafx.geometry.Pos;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;

@@ -1,7 +1,7 @@
-package mvpglobal.view.aboutscreen;
+package be.kdg.integration2.mvpglobal.view.aboutscreen;
 
-import mvpglobal.model.*;
-import mvpglobal.view.UISettings;
+import be.kdg.integration2.mvpglobal.model.*;
+import be.kdg.integration2.mvpglobal.view.UISettings;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 

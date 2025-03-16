@@ -1,9 +1,9 @@
-package mvpglobal.view.startscreen;
+package be.kdg.integration2.mvpglobal.view.startscreen;
 
-import mvpglobal.model.*;
-import mvpglobal.view.*;
-import mvpglobal.view.mainscreen.MainScreenPresenter;
-import mvpglobal.view.mainscreen.MainScreenView;
+import be.kdg.integration2.mvpglobal.model.*;
+import be.kdg.integration2.mvpglobal.view.*;
+import be.kdg.integration2.mvpglobal.view.mainscreen.MainScreenPresenter;
+import be.kdg.integration2.mvpglobal.view.mainscreen.MainScreenView;
 import javafx.event.*;
 import javafx.scene.control.Alert;
 import javafx.stage.WindowEvent;

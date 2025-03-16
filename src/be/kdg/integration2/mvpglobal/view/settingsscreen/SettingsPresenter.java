@@ -1,7 +1,7 @@
-package mvpglobal.view.settingsscreen;
+package be.kdg.integration2.mvpglobal.view.settingsscreen;
 
-import mvpglobal.model.*;
-import mvpglobal.view.UISettings;
+import be.kdg.integration2.mvpglobal.model.*;
+import be.kdg.integration2.mvpglobal.view.UISettings;
 import javafx.event.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
@@ -54,10 +54,6 @@ public class SettingsPresenter {
         });
 
         view.getOkButton().setOnMouseClicked(event -> handleCloseEvent(event));
-    }
-
-    public void windowsHandler() {
-        view.getScene().getWindow().setOnCloseRequest(event -> handleCloseEvent(event));
     }
 
     private void handleCloseEvent(Event event){

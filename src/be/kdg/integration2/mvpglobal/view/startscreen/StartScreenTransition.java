@@ -1,4 +1,4 @@
-package mvpglobal.view.startscreen;
+package be.kdg.integration2.mvpglobal.view.startscreen;
 
 import javafx.animation.Interpolator;
 import javafx.animation.Transition;

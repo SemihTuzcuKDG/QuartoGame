@@ -1,8 +1,8 @@
-package mvpglobal;
+package be.kdg.integration2.mvpglobal;
 
-import mvpglobal.view.startscreen.*;
-import mvpglobal.model.*;
-import mvpglobal.view.*;
+import be.kdg.integration2.mvpglobal.view.startscreen.*;
+import be.kdg.integration2.mvpglobal.model.*;
+import be.kdg.integration2.mvpglobal.view.*;
 import javafx.application.Application;
 import javafx.scene.*;
 import javafx.scene.image.Image;
