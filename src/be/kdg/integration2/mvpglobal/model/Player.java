@@ -2,6 +2,9 @@ package be.kdg.integration2.mvpglobal.model;
 
 public class Player {
     private String name;
+    public Player(String name) {
+        this.name = name;
+    }
     public Player() {
         this.name = name;
     }
@@ -9,10 +12,9 @@ public class Player {
     public String getName() {
         return name;
     }
-    public Piece choosePiece(){
-        return new Piece();
+
+
+    public Piece choosePiece() {
+        return null;
     }
-
-
-
 }

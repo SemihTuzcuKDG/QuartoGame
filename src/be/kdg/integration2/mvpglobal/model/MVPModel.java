@@ -7,6 +7,22 @@ public class MVPModel {
          this.gameSession = new GameSession();
          // complete the code here
     }
+    public GameSession getGameSession() {
+        return gameSession;
+    }
+
+    public boolean placePiece(int row, int col, String piece) {
+        return false;//not finishe
+    }
+
+    public boolean checkWinCondition() {
+        return false;//not finishe
+    }
+
+    public boolean isPlayerOneTurn() {
+        return false;//not finishec
+    }
+
 
     //...
 
