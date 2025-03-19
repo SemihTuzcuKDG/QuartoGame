@@ -3,49 +3,55 @@ package be.kdg.integration2.mvpglobal.view.gamescreen;
 import be.kdg.integration2.mvpglobal.model.MVPModel;
 import be.kdg.integration2.mvpglobal.model.Piece;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 public class QuartoPresenter {
-    private MVPModel model;
-    private QuartoView view;
+    private final MVPModel model;
+    private final QuartoView view;
 
     public QuartoPresenter(MVPModel model, QuartoView view) {
         this.model = model;
         this.view = view;
-        attachEventHandlers();
+        view.setPresenter(this);
+        updateView();
     }
 
-    private void attachEventHandlers() {
-        Button[][] buttons = view.getButtons();
-
-        for (int row = 0; row < buttons.length; row++) {
-            for (int col = 0; col < buttons[row].length; col++) {
-                int r = row, c = col;
-                buttons[row][col].setOnAction(event -> handleMove(r, c));
-            }
+    public void handlePieceSelection(Piece piece) {
+        if (model.selectPiece(piece)) {
+            view.displayMessage("Piece selected! Opponent must place it.");
+            view.displaySelectedPiece(piece);
+            updateView();
+        } else {
+            view.displayMessage("Invalid selection! Choose another.");
         }
     }
 
-    private void handleMove(int row, int col) {
-        String piece = model.isPlayerOneTurn() ? "P1" : "P2"; // Example piece (can be improved)
-
-        if (model.placePiece(row, col,piece)) {
-            view.getButtons()[row][col].setText(piece);
+    public void handleMove(int row, int col) {
+        if (model.placePiece(row, col)) {
+            updateView();
             if (model.checkWinCondition()) {
-                view.getStatusLabel().setText("Game Over! " + (model.isPlayerOneTurn() ? "Player 2" : "Player 1") + " Wins!");
-                disableButtons();
+                view.displayMessage("Game Over! " + (model.isPlayerOneTurn() ? "Player 2" : "Player 1") + " Wins!");
             } else {
-                view.getStatusLabel().setText(model.isPlayerOneTurn() ? "Player 1's Turn" : "Player 2's Turn");
+                view.displayMessage((model.isPlayerOneTurn() ? "Player 1" : "Player 2") + ", select a piece!");
             }
+        } else {
+            view.displayMessage("Invalid move! Try again.");
         }
     }
 
-    private void disableButtons() {
-        for (Button[] row : view.getButtons()) {
-            for (Button button : row) {
-                button.setDisable(true);
-            }
-        }
+    public void resetGame() {
+        model.resetGame();
+        updateView();
+        view.displaySelectedPiece(null);
+        view.displayMessage("Game reset! Player 1, select a piece.");
+    }
+
+    private void updateView() {
+        Platform.runLater(() -> {
+            view.displayBoard(model.getBoard());
+            view.updatePieceSelection(model.getAvailablePieces());
+        });
     }
 }

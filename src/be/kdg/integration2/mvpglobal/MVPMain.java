@@ -31,16 +31,16 @@ public class MVPMain extends Application {
             }
         }
         primaryStage.setScene(scene);
-        primaryStage.setHeight(uiSettings.getLowestRes() / 4);
-        primaryStage.setWidth(uiSettings.getLowestRes() / 4);
+        primaryStage.setHeight((double) uiSettings.getLowestRes() / 4);
+        primaryStage.setWidth((double) uiSettings.getLowestRes() / 4);
         primaryStage.setTitle(uiSettings.getApplicationName());
         if (Files.exists(uiSettings.getApplicationIconPath())) {
-             try {
-                 primaryStage.getIcons().add(new Image(uiSettings.getApplicationIconPath().toUri().toURL().toString()));
-             }
-             catch (MalformedURLException ex) {
-                 // do nothing, if toURL-conversion fails, program can continue
-             }
+            try {
+                primaryStage.getIcons().add(new Image(uiSettings.getApplicationIconPath().toUri().toURL().toString()));
+            }
+            catch (MalformedURLException ex) {
+                // do nothing, if toURL-conversion fails, program can continue
+            }
         } else { // do nothing, if ApplicationIcon is not available, program can continue
         }
         StartScreenPresenter presenter = new StartScreenPresenter(model, view, uiSettings);
@@ -56,13 +56,12 @@ public class MVPMain extends Application {
         primaryStage.show();
     }
     private void openQuartoStage() {
-        // Set up secondary stage for Quarto
         MVPModel model = new MVPModel();
         QuartoView view = new QuartoView();
         new QuartoPresenter(model, view);
 
         Stage quartoStage = new Stage();
-        Scene quartoScene = new Scene(view.getViewLayout(), 400, 450);
+        Scene quartoScene = new Scene(view.getViewLayout(), 600, 500);
         quartoStage.setTitle("Quarto Game");
         quartoStage.setScene(quartoScene);
 

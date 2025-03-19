@@ -17,8 +17,28 @@ public class GameSession {
 
         // determine move AI:
         Move move = computer.getMove(this);
-        // ...
+
+
     }
 
-    public Board getBoard () {return board;}
+    public Board getBoard() {
+        return board;
+    }
+
+
+    public HumanPlayer getPlayer() {
+        return player;
+    }
+
+    public ComputerPlayer getComputer() {
+        return computer;
+    }
+
+    public boolean isGameOver() {
+        return board.isGame0ver();
+    }
+
+    public String getWinner() {
+        return board.getWinner();
+    }
 }

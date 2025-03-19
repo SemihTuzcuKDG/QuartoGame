@@ -1,9 +1,9 @@
 package be.kdg.integration2.mvpglobal.model;
 
 public class Board  {
-        private Piece[] [] grid;
-        private Player winner;
-        public Board() {
+    private Piece[] [] grid;
+    private Player winner;
+    public Board() {
             this.grid = new Piece[4] [4];
         }
         public boolean placePiece(Piece piece){
@@ -18,8 +18,7 @@ public class Board  {
                 return false;
         }
 
-
-            public boolean isWinningMove (Piece piece){
+        public boolean isWinningMove (Piece piece){
             return false;}
 
             public boolean isGame0ver() {
@@ -33,6 +32,9 @@ public class Board  {
             return winner != null ? winner.getName() : "No winner";
         }
 
+    public Piece[][] getGrid() {
+        return grid;
+    }
 
     public boolean endMoveAIPossible() {
         return false;

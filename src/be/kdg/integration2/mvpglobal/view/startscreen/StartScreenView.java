@@ -24,6 +24,7 @@ public class StartScreenView extends BorderPane  {
         animate();
     }
 
+
     private void initialiseNodes() {
         this.timeDisplay = new Label("Loading: 0.0");
         this.timeProgress = new ProgressBar();

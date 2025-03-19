@@ -4,38 +4,22 @@ import java.util.EnumSet;
 import java.util.Set;
 
 public class Piece {
-    private final Attribute height;
-    private final Attribute color;
-    private final Attribute shape;
-    private final Attribute top; // SOLID or HOLLOW
+    private final Set<Attribute> attributes;
 
-    public Piece(Attribute height, Attribute color, Attribute shape, Attribute top) {
-        this.height = height;
-        this.color = color;
-        this.shape = shape;
-        this.top = top;
+    public Piece(Attribute... attributes) {
+        this.attributes = EnumSet.of(attributes[0], attributes);
     }
 
-    public Attribute getHeight() { return height; }
-    public Attribute getColor() { return color; }
-    public Attribute getShape() { return shape; }
-    public Attribute getTop() { return top; }
+    public boolean hasAttribute(Attribute attr) {
+        return attributes.contains(attr);
+    }
 
-    public String getImagePath() {
-        String path = "/images/";
-        path += height.name().toLowerCase() + "-"
-                + color.name().toLowerCase() + "-"
-                + shape.name().toLowerCase();
-
-        if(top == Attribute.HOLLOW) {
-            path += "-hole";
-        }
-        path += ".png";
-        return path;
+    public Set<Attribute> getAttributes() {
+        return EnumSet.copyOf(attributes);
     }
 
     @Override
     public String toString() {
-        return height + "-" + color + "-" + shape + "-" + top;
+        return attributes.toString();
     }
 }
