@@ -3,6 +3,8 @@ package be.kdg.integration2.mvpglobal.view.gamescreen;
 import be.kdg.integration2.mvpglobal.model.Attribute;
 import be.kdg.integration2.mvpglobal.model.Piece;
 import javafx.geometry.Pos;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -120,35 +122,28 @@ public class QuartoView extends BorderPane {
 
     private ImageView getPieceImage(Piece piece) {
         String fileName = getImageFileName(piece);
+        String imagePath = "/be/kdg/integration2/mvpglobal/resource/" + fileName;
+        Image baseImage = new Image(getClass().getResourceAsStream(imagePath));
 
-        String imagePath = "file:C:/Users/semih/Downloads/QuartoGame/src/be/kdg/integration2/mvpglobal/resource/" + fileName;
-        Image baseImage = new Image(imagePath);
 
-        if (baseImage.isError()) {
-            System.out.println("Failed to load: " + imagePath);
+        if (!piece.hasAttribute(Attribute.HOLLOW)) {
+            ImageView imageView = new ImageView(baseImage);
+            imageView.setFitWidth(50);
+            imageView.setFitHeight(50);
+            return imageView;
         }
 
-        ImageView imageView = new ImageView(baseImage);
-        imageView.setFitWidth(50);
-        imageView.setFitHeight(50);
 
-        if (piece.hasAttribute(Attribute.HOLLOW)) {
-            String holePath = "file:C:/Users/semih/Downloads/QuartoGame/src/be/kdg/integration2/mvpglobal/resources/" + fileName;
-            Image holeImage = new Image(imagePath);
+        String holePath = "/be/kdg/integration2/mvpglobal/resource/hole.png";
+        Image holeImage = new Image(getClass().getResourceAsStream(holePath));
 
-            if (holeImage.isError()) {
-                System.out.println("Failed to load hole overlay: " + holePath);
-            }
+        Canvas canvas = new Canvas(50, 50);
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        gc.drawImage(baseImage, 0, 0, 50, 50); // Draw base piece
+        gc.drawImage(holeImage, 0, 0, 50, 50); // Draw hole overlay
 
-            ImageView holeOverlay = new ImageView(holeImage);
-            holeOverlay.setFitWidth(50);
-            holeOverlay.setFitHeight(50);
-
-            StackPane stackPane = new StackPane(imageView, holeOverlay);
-            return new ImageView(stackPane.snapshot(null, null));
-        }
-        return imageView;
-        //not done
+        ImageView compositeImageView = new ImageView(canvas.snapshot(null, null));
+        return compositeImageView;
     }
 
     private String getImageFileName(Piece piece) {
@@ -157,7 +152,7 @@ public class QuartoView extends BorderPane {
         fileName.append(piece.hasAttribute(Attribute.TALL) ? "big_" : "sml_");
         fileName.append(piece.hasAttribute(Attribute.BROWN) ? "bwn_" : "ylw_");
         fileName.append(piece.hasAttribute(Attribute.SQUARE) ? "sqr_" : "cir_");
-        fileName.append(piece.hasAttribute(Attribute.SOLID) ? "_solid.png" : "_hollow.png");
+        fileName.append("solid.png"); // Always load solid images
 
         return fileName.toString();
     }
