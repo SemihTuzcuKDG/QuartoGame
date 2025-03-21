@@ -8,6 +8,8 @@ public class MVPModel {
     private List<Piece> availablePieces;
     private Piece selectedPiece;
     private boolean isPlayerOneTurn;
+    private String playerName;
+
 
     public MVPModel() {
         resetGame();
@@ -124,5 +126,13 @@ public class MVPModel {
 
     public Piece getSelectedPiece() {
         return selectedPiece;
+    }
+
+    public String getPlayerName() {
+        return playerName;
+    }
+
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
     }
 }

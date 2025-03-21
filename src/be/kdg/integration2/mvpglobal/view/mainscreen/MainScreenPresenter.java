@@ -2,6 +2,8 @@ package be.kdg.integration2.mvpglobal.view.mainscreen;
 
 import be.kdg.integration2.mvpglobal.model.*;
 import be.kdg.integration2.mvpglobal.view.aboutscreen.*;
+import be.kdg.integration2.mvpglobal.view.gamescreen.QuartoPresenter;
+import be.kdg.integration2.mvpglobal.view.gamescreen.QuartoView;
 import be.kdg.integration2.mvpglobal.view.infoscreen.*;
 import be.kdg.integration2.mvpglobal.view.settingsscreen.*;
 import be.kdg.integration2.mvpglobal.view.UISettings;
@@ -13,7 +15,7 @@ import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -37,78 +39,81 @@ public class MainScreenPresenter {
     }
 
     private void updateView() {
+        String playerName = model.getPlayerName();
+        System.out.println("Retrieved Player Name: " + playerName);
+        view.updatePlayerName(playerName);
      }
 
     private void EventHandlers() {
-        view.getTestButton().setOnAction (event -> {
+        view.getTestButton().setOnAction(event -> {
             GameSession gameSession = new GameSession();
             gameSession.play();
         }); // just test code, needs another proper place in your code!!
         view.getSettingsItem().setOnAction(event -> {
-                SettingsView settingsView = new SettingsView(uiSettings);
-                SettingsPresenter presenter = new SettingsPresenter(this.model, settingsView, uiSettings);
-                Stage settingsStage = new Stage();
-                settingsStage.setTitle("Settings");
-                settingsStage.initOwner(view.getScene().getWindow());
-                settingsStage.initModality(Modality.APPLICATION_MODAL);
-                Scene scene = new Scene(settingsView);
-                settingsStage.setScene(scene);
-                settingsStage.setTitle(uiSettings.getApplicationName() + " - Settings");
-                settingsStage.setX(view.getScene().getWindow().getX() + uiSettings.getResX() / 10);
-                settingsStage.setY(view.getScene().getWindow().getY() + uiSettings.getResY() / 10);
-                if (Files.exists(uiSettings.getApplicationIconPath())) {
-                    try {
-                        settingsStage.getIcons().add(new Image(uiSettings.getApplicationIconPath().toUri().toURL().toString()));
-                    } catch (MalformedURLException ex) {
-                        // do nothing, if toURL-conversion fails, program can continue
-                    }
-                } else { // do nothing, if ApplicationIconImage is not available, program can continue
+            SettingsView settingsView = new SettingsView(uiSettings);
+            SettingsPresenter presenter = new SettingsPresenter(this.model, settingsView, uiSettings);
+            Stage settingsStage = new Stage();
+            settingsStage.setTitle("Settings");
+            settingsStage.initOwner(view.getScene().getWindow());
+            settingsStage.initModality(Modality.APPLICATION_MODAL);
+            Scene scene = new Scene(settingsView);
+            settingsStage.setScene(scene);
+            settingsStage.setTitle(uiSettings.getApplicationName() + " - Settings");
+            settingsStage.setX(view.getScene().getWindow().getX() + uiSettings.getResX() / 10);
+            settingsStage.setY(view.getScene().getWindow().getY() + uiSettings.getResY() / 10);
+            if (Files.exists(uiSettings.getApplicationIconPath())) {
+                try {
+                    settingsStage.getIcons().add(new Image(uiSettings.getApplicationIconPath().toUri().toURL().toString()));
+                } catch (MalformedURLException ex) {
+                    // do nothing, if toURL-conversion fails, program can continue
                 }
-                settingsView.getScene().getWindow().setHeight(7 * uiSettings.getResY() / 10);
-                settingsView.getScene().getWindow().setWidth(7 * uiSettings.getResX() / 10);
-                if (uiSettings.styleSheetAvailable()) {
-                    settingsStage.getScene().getStylesheets().removeAll();
-                    try {
-                        settingsStage.getScene().getStylesheets().add(uiSettings.getStyleSheetPath().toUri().toURL().toString());
-                    } catch (MalformedURLException ex) {
-                        // do nothing, if toURL-conversion fails, program can continue
-                    }
+            } else { // do nothing, if ApplicationIconImage is not available, program can continue
+            }
+            settingsView.getScene().getWindow().setHeight(7 * uiSettings.getResY() / 10);
+            settingsView.getScene().getWindow().setWidth(7 * uiSettings.getResX() / 10);
+            if (uiSettings.styleSheetAvailable()) {
+                settingsStage.getScene().getStylesheets().removeAll();
+                try {
+                    settingsStage.getScene().getStylesheets().add(uiSettings.getStyleSheetPath().toUri().toURL().toString());
+                } catch (MalformedURLException ex) {
+                    // do nothing, if toURL-conversion fails, program can continue
                 }
-                settingsStage.showAndWait();
-                if (uiSettings.styleSheetAvailable()) {
-                    view.getScene().getStylesheets().removeAll();
-                    try {
-                        view.getScene().getStylesheets().add(uiSettings.getStyleSheetPath().toUri().toURL().toString());
-                    } catch (MalformedURLException ex) {
-                        // do nothing, if toURL-conversion fails, program can continue
-                    }
+            }
+            settingsStage.showAndWait();
+            if (uiSettings.styleSheetAvailable()) {
+                view.getScene().getStylesheets().removeAll();
+                try {
+                    view.getScene().getStylesheets().add(uiSettings.getStyleSheetPath().toUri().toURL().toString());
+                } catch (MalformedURLException ex) {
+                    // do nothing, if toURL-conversion fails, program can continue
                 }
+            }
         });
         view.getLoadItem().setOnAction(event -> {
-                FileChooser fileChooser = new FileChooser();
-                fileChooser.setTitle("Load Data File");
-                fileChooser.getExtensionFilters().addAll(
-                        new FileChooser.ExtensionFilter("Textfiles", "*.txt"),
-                        new FileChooser.ExtensionFilter("All Files", "*.*"));
-                File selectedFile = fileChooser.showOpenDialog(view.getScene().getWindow());
-                if ((selectedFile != null) ){ //^ (Files.isReadable(Paths.get(selectedFile.toURI())))) {
-                    try {
-                        List<String> input = Files.readAllLines(Paths.get(selectedFile.toURI()));
-                        // Start implementation read data to be transfered to model
-                        for (int i = 0; i < input.size(); i++) {
-                            String inputline = input.get(i);
-                            String[] elementen = inputline.split(" ");
-                        }
-                        // End implementation read data to be transfered to model
-                    } catch (IOException e) {
-                        //
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Load Data File");
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("Textfiles", "*.txt"),
+                    new FileChooser.ExtensionFilter("All Files", "*.*"));
+            File selectedFile = fileChooser.showOpenDialog(view.getScene().getWindow());
+            if ((selectedFile != null)) { //^ (Files.isReadable(Paths.get(selectedFile.toURI())))) {
+                try {
+                    List<String> input = Files.readAllLines(Paths.get(selectedFile.toURI()));
+                    // Start implementation read data to be transfered to model
+                    for (int i = 0; i < input.size(); i++) {
+                        String inputline = input.get(i);
+                        String[] elementen = inputline.split(" ");
                     }
-                } else {
-                    Alert errorWindow = new Alert(Alert.AlertType.ERROR);
-                    errorWindow.setHeaderText("Problem with the selected input file:");
-                    errorWindow.setContentText("File is not readable");
-                    errorWindow.showAndWait();
+                    // End implementation read data to be transfered to model
+                } catch (IOException e) {
+                    //
                 }
+            } else {
+                Alert errorWindow = new Alert(Alert.AlertType.ERROR);
+                errorWindow.setHeaderText("Problem with the selected input file:");
+                errorWindow.setContentText("File is not readable");
+                errorWindow.showAndWait();
+            }
         });
         view.getSaveItem().setOnAction(event -> {
             FileChooser fileChooser = new FileChooser();
@@ -140,8 +145,11 @@ public class MainScreenPresenter {
                 errorWindow.showAndWait();
             }
 
-                });
+        });
         view.getExitItem().setOnAction(event -> handleCloseEvent(event));
+
+
+
 
         view.getAboutItem().setOnAction(event -> {
                 AboutScreenView aboutScreenView = new AboutScreenView(uiSettings);
@@ -207,7 +215,56 @@ public class MainScreenPresenter {
                 }
                 infoScreenStage.showAndWait();
         });
+        view.getRulesButton().setOnAction(event -> {
+            InfoScreenView infoScreenView = new InfoScreenView(uiSettings);
+            InfoScreenPresenter infoScreenPresenter = new InfoScreenPresenter(model, infoScreenView, uiSettings);
+            Stage infoScreenStage = new Stage();
+            infoScreenStage.initOwner(view.getScene().getWindow());
+            infoScreenStage.initModality(Modality.APPLICATION_MODAL);
+            Scene scene = new Scene(infoScreenView);
+            infoScreenStage.setScene(scene);
+            infoScreenStage.setTitle(uiSettings.getApplicationName()+ " - Info");
+            infoScreenStage.setX(view.getScene().getWindow().getX() + uiSettings.getResX() / 10);
+            infoScreenStage.setY(view.getScene().getWindow().getY() + uiSettings.getResY() / 10);
+            if (Files.exists(uiSettings.getApplicationIconPath())) {
+                try {
+                    infoScreenStage.getIcons().add(new Image(uiSettings.getApplicationIconPath().toUri().toURL().toString()));
+                }
+                catch (MalformedURLException ex) {
+                    // do nothing, if toURL-conversion fails, program can continue
+                }
+            } else { // do nothing, if ApplicationIconImage is not available, program can continue
+            }
+            infoScreenView.getScene().getWindow().setHeight(uiSettings.getResY()/2);
+            infoScreenView.getScene().getWindow().setWidth(uiSettings.getResX()/2);
+            if (uiSettings.styleSheetAvailable()){
+                infoScreenView.getScene().getStylesheets().removeAll();
+                try {
+                    infoScreenView.getScene().getStylesheets().add(uiSettings.getStyleSheetPath().toUri().toURL().toString());
+                }
+                catch (MalformedURLException ex) {
+                    // do nothing, if toURL-conversion fails, program can continue
+                }
+            }
+
+            infoScreenStage.showAndWait();
+        });
+        view.getStartGameButton().setOnAction(e -> openQuartoStage());
+
     }
+    private void openQuartoStage() {
+        MVPModel model = new MVPModel();
+        QuartoView view = new QuartoView();
+        new QuartoPresenter(model, view);
+
+        Stage quartoStage = new Stage();
+        Scene quartoScene = new Scene(view.getViewLayout(), 650, 650);
+        quartoStage.setTitle("Quarto Game");
+        quartoStage.setScene(quartoScene);
+
+        quartoStage.show();
+    }
+
 
     public void windowsHandler() {
         view.getScene().getWindow().setOnCloseRequest(event -> handleCloseEvent(event));
