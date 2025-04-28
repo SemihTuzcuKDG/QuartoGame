@@ -1,5 +1,6 @@
 package be.kdg.integration2.mvpglobal.view.mainscreen;
 
+import be.kdg.integration2.mvpglobal.MVPMain;
 import be.kdg.integration2.mvpglobal.model.*;
 import be.kdg.integration2.mvpglobal.view.aboutscreen.*;
 import be.kdg.integration2.mvpglobal.view.gamescreen.QuartoPresenter;
@@ -45,6 +46,7 @@ public class MainScreenPresenter {
      }
 
     private void EventHandlers() {
+        view.getLeaderboardButton().setOnAction(event -> MVPMain.openLeaderboardScreen());
         view.getTestButton().setOnAction(event -> {
             GameSession gameSession = new GameSession();
             gameSession.play();

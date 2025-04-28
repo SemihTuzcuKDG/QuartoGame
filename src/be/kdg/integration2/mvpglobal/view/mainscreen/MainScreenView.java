@@ -19,6 +19,7 @@ public class MainScreenView extends BorderPane  {
     private Button startGameButton;
     private Button rulesButton;
     private Label playerNameLabel;
+    private Button leaderboardButton;
 
 
     public MainScreenView(UISettings uiSettings) {
@@ -31,6 +32,7 @@ public class MainScreenView extends BorderPane  {
         playerNameLabel = new Label("Welcome"); // default text
         startGameButton = new Button("Start Game");
         rulesButton = new Button("Game Rules");
+        leaderboardButton = new Button("Leaderboard");
 
 
 
@@ -57,11 +59,16 @@ public class MainScreenView extends BorderPane  {
         centerBox.setAlignment(Pos.CENTER);
         setCenter(centerBox);
 
-        centerBox.getChildren().addAll(rulesButton);
+        centerBox.getChildren().addAll(rulesButton,leaderboardButton);
         setCenter(centerBox);
+
     }
 
 
+
+    public Button getLeaderboardButton() {
+        return leaderboardButton;
+    }
 
     MenuItem getExitItem() {return exitMI;}
 

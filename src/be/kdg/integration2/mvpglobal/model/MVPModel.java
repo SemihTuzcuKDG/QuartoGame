@@ -9,19 +9,36 @@ public class MVPModel {
     private Piece selectedPiece;
     private boolean isPlayerOneTurn;
     private String playerName;
+    private long gameStartTime;
+    private long moveStartTime;
+    private int player1Moves;
+    private int player2Moves;
+    private long totalMoveDurationPlayer1;
+    private long totalMoveDurationPlayer2;
+    private int player1Score;
+    private int player2Score;
 
 
     public MVPModel() {
         resetGame();
     }
 
-    public void resetGame() {
-        board = new Piece[4][4];
-        availablePieces = new ArrayList<>();
-        selectedPiece = null;
-        isPlayerOneTurn = true;
-        generatePieces();
-    }
+
+        public void resetGame() {
+            board = new Piece[4][4];
+            availablePieces = new ArrayList<>();
+            selectedPiece = null;
+            isPlayerOneTurn = true;
+            player1Moves = 0;
+            player2Moves = 0;
+            totalMoveDurationPlayer1 = 0;
+            totalMoveDurationPlayer2 = 0;
+            player1Score = 0;
+            player2Score = 0;
+            gameStartTime = System.currentTimeMillis();
+            moveStartTime = System.currentTimeMillis();
+            generatePieces();
+        }
 
     private void generatePieces() {
         availablePieces.clear();
@@ -51,6 +68,20 @@ public class MVPModel {
         }
         board[row][col] = selectedPiece;
         selectedPiece = null;
+
+
+        long moveEndTime = System.currentTimeMillis();
+        long moveDuration = moveEndTime - moveStartTime;
+
+        if (isPlayerOneTurn) {
+            player1Moves++;
+            totalMoveDurationPlayer1 += moveDuration;
+        } else {
+            player2Moves++;
+            totalMoveDurationPlayer2 += moveDuration;
+        }
+
+        moveStartTime = System.currentTimeMillis();
 
         if (checkWinCondition()) {
             return true;
@@ -135,4 +166,35 @@ public class MVPModel {
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
     }
+
+    public long getGameStartTime() {
+        return gameStartTime;
+    }
+
+    public int getPlayer1Moves() {
+        return player1Moves;
+    }
+
+    public int getPlayer2Moves() {
+        return player2Moves;
+    }
+
+    public double getPlayer1AvgMoveDuration() {
+        if (player1Moves == 0) return 0;
+        return (totalMoveDurationPlayer1 / (double) player1Moves) / 1000.0; // seconds
+    }
+
+    public double getPlayer2AvgMoveDuration() {
+        if (player2Moves == 0) return 0;
+        return (totalMoveDurationPlayer2 / (double) player2Moves) / 1000.0; // seconds
+    }
+
+    public int getPlayer1Score() {
+        return player1Score;
+    }
+
+    public int getPlayer2Score() {
+        return player2Score;
+    }
 }
+
