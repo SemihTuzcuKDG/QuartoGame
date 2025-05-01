@@ -1,5 +1,7 @@
 package be.kdg.integration2.mvpglobal.model;
 
+import java.time.LocalDateTime;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,36 +11,28 @@ public class MVPModel {
     private Piece selectedPiece;
     private boolean isPlayerOneTurn;
     private String playerName;
-    private long gameStartTime;
-    private long moveStartTime;
-    private int player1Moves;
-    private int player2Moves;
-    private long totalMoveDurationPlayer1;
-    private long totalMoveDurationPlayer2;
+    private List<Move> player1Moves;
+    private List<Move> player2Moves;
+    private LocalDateTime gameStartTime;
     private int player1Score;
     private int player2Score;
-
 
     public MVPModel() {
         resetGame();
     }
 
-
-        public void resetGame() {
-            board = new Piece[4][4];
-            availablePieces = new ArrayList<>();
-            selectedPiece = null;
-            isPlayerOneTurn = true;
-            player1Moves = 0;
-            player2Moves = 0;
-            totalMoveDurationPlayer1 = 0;
-            totalMoveDurationPlayer2 = 0;
-            player1Score = 0;
-            player2Score = 0;
-            gameStartTime = System.currentTimeMillis();
-            moveStartTime = System.currentTimeMillis();
-            generatePieces();
-        }
+    public void resetGame() {
+        board = new Piece[4][4];
+        availablePieces = new ArrayList<>();
+        selectedPiece = null;
+        isPlayerOneTurn = true;
+        player1Moves = new ArrayList<>();
+        player2Moves = new ArrayList<>();
+        gameStartTime = LocalDateTime.now();
+        player1Score = 0;
+        player2Score = 0;
+        generatePieces();
+    }
 
     private void generatePieces() {
         availablePieces.clear();
@@ -63,29 +57,28 @@ public class MVPModel {
     }
 
     public boolean placePiece(int row, int col) {
-        if (selectedPiece == null || board[row][col] != null) {
-            return false;
-        }
+        if (selectedPiece == null || board[row][col] != null) return false;
+
         board[row][col] = selectedPiece;
-        selectedPiece = null;
 
-
-        long moveEndTime = System.currentTimeMillis();
-        long moveDuration = moveEndTime - moveStartTime;
+        Move move = new Move();
+        move.setPlayerName(isPlayerOneTurn ? playerName : "AI");
+        move.setRow(row);
+        move.setCol(col);
+        move.setTimestamp(LocalDateTime.now());
+        move.setStartTime(LocalDateTime.now()); // optional: set earlier if needed
+        move.setEndTime(LocalDateTime.now());
+        move.computeDuration();
 
         if (isPlayerOneTurn) {
-            player1Moves++;
-            totalMoveDurationPlayer1 += moveDuration;
+            player1Moves.add(move);
         } else {
-            player2Moves++;
-            totalMoveDurationPlayer2 += moveDuration;
+            player2Moves.add(move);
         }
 
-        moveStartTime = System.currentTimeMillis();
+        selectedPiece = null;
 
-        if (checkWinCondition()) {
-            return true;
-        }
+        if (checkWinCondition()) return true;
 
         isPlayerOneTurn = !isPlayerOneTurn;
         return true;
@@ -100,8 +93,8 @@ public class MVPModel {
             if (checkAttributes(board[i][0], board[i][1], board[i][2], board[i][3])) return true;
             if (checkAttributes(board[0][i], board[1][i], board[2][i], board[3][i])) return true;
         }
-        return checkAttributes(board[0][0], board[1][1], board[2][2], board[3][3])
-                || checkAttributes(board[0][3], board[1][2], board[2][1], board[3][0]);
+        return checkAttributes(board[0][0], board[1][1], board[2][2], board[3][3]) ||
+                checkAttributes(board[0][3], board[1][2], board[2][1], board[3][0]);
     }
 
     private boolean checkSquare() {
@@ -117,23 +110,20 @@ public class MVPModel {
     private boolean checkAttributes(Piece... pieces) {
         if (piecesContainNull(pieces)) return false;
 
-        boolean sameHeight = pieces[0].hasAttribute(Attribute.TALL) == pieces[1].hasAttribute(Attribute.TALL)
-                && pieces[0].hasAttribute(Attribute.TALL) == pieces[2].hasAttribute(Attribute.TALL)
-                && pieces[0].hasAttribute(Attribute.TALL) == pieces[3].hasAttribute(Attribute.TALL);
-
-        boolean sameColor = pieces[0].hasAttribute(Attribute.YELLOW) == pieces[1].hasAttribute(Attribute.YELLOW)
-                && pieces[0].hasAttribute(Attribute.YELLOW) == pieces[2].hasAttribute(Attribute.YELLOW)
-                && pieces[0].hasAttribute(Attribute.YELLOW) == pieces[3].hasAttribute(Attribute.YELLOW);
-
-        boolean sameShape = pieces[0].hasAttribute(Attribute.SQUARE) == pieces[1].hasAttribute(Attribute.SQUARE)
-                && pieces[0].hasAttribute(Attribute.SQUARE) == pieces[2].hasAttribute(Attribute.SQUARE)
-                && pieces[0].hasAttribute(Attribute.SQUARE) == pieces[3].hasAttribute(Attribute.SQUARE);
-
-        boolean sameTop = pieces[0].hasAttribute(Attribute.SOLID) == pieces[1].hasAttribute(Attribute.SOLID)
-                && pieces[0].hasAttribute(Attribute.SOLID) == pieces[2].hasAttribute(Attribute.SOLID)
-                && pieces[0].hasAttribute(Attribute.SOLID) == pieces[3].hasAttribute(Attribute.SOLID);
+        boolean sameHeight = allMatch(pieces, Attribute.TALL);
+        boolean sameColor = allMatch(pieces, Attribute.YELLOW);
+        boolean sameShape = allMatch(pieces, Attribute.SQUARE);
+        boolean sameTop = allMatch(pieces, Attribute.SOLID);
 
         return sameHeight || sameColor || sameShape || sameTop;
+    }
+
+    private boolean allMatch(Piece[] pieces, Attribute attr) {
+        boolean first = pieces[0].hasAttribute(attr);
+        for (int i = 1; i < pieces.length; i++) {
+            if (pieces[i].hasAttribute(attr) != first) return false;
+        }
+        return true;
     }
 
     private boolean piecesContainNull(Piece... pieces) {
@@ -167,26 +157,22 @@ public class MVPModel {
         this.playerName = playerName;
     }
 
-    public long getGameStartTime() {
-        return gameStartTime;
-    }
-
     public int getPlayer1Moves() {
-        return player1Moves;
+        return player1Moves.size();
     }
 
     public int getPlayer2Moves() {
-        return player2Moves;
+        return player2Moves.size();
     }
 
     public double getPlayer1AvgMoveDuration() {
-        if (player1Moves == 0) return 0;
-        return (totalMoveDurationPlayer1 / (double) player1Moves) / 1000.0; // seconds
+        if (player1Moves.isEmpty()) return 0;
+        return player1Moves.stream().mapToLong(Move::getDuration).average().orElse(0) / 1000.0;
     }
 
     public double getPlayer2AvgMoveDuration() {
-        if (player2Moves == 0) return 0;
-        return (totalMoveDurationPlayer2 / (double) player2Moves) / 1000.0; // seconds
+        if (player2Moves.isEmpty()) return 0;
+        return player2Moves.stream().mapToLong(Move::getDuration).average().orElse(0) / 1000.0;
     }
 
     public int getPlayer1Score() {
@@ -195,6 +181,10 @@ public class MVPModel {
 
     public int getPlayer2Score() {
         return player2Score;
+    }
+
+    public long getTotalPlayTimeSeconds() {
+        return Duration.between(gameStartTime, LocalDateTime.now()).getSeconds();
     }
 }
 

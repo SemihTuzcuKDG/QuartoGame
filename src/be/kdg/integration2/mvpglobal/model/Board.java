@@ -1,5 +1,7 @@
 package be.kdg.integration2.mvpglobal.model;
 
+import java.util.Random;
+
 public class Board  {
     private Piece[] [] grid;
     private Player winner;
@@ -62,7 +64,16 @@ public class Board  {
         // change attributes of move
     }
     public void determineRandomMove (Move move) {
-        // change attributes of move
+        Random rand = new Random();
+        while (true) {
+            int row = rand.nextInt(4);
+            int col = rand.nextInt(4);
+            if (grid[row][col] == null) {
+                move.setRow(row);
+                move.setCol(col);
+                break;
+            }
+        }
     }
     public void determineWinningPositionMove (Move move) {
         // change attributes of move

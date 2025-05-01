@@ -36,19 +36,16 @@
                 updateView();
 
                 if (model.checkWinCondition()) {
-                    view.displayMessage("Game Over! " + (model.isPlayerOneTurn() ? "Player 2" : "Player 1") + " Wins!");
+                    view.displayMessage("Game Over! " + (model.isPlayerOneTurn() ? "AI" : model.getPlayerName()) + " Wins!");
 
 
-                    String realWinnerName = model.isPlayerOneTurn() ? "Player 2" : "Player 1";
+                    String realWinnerName = model.isPlayerOneTurn() ? "AI" : model.getPlayerName();
                     System.out.println("Game saved to DB with winner: " + realWinnerName);
-                    int realTotalPlayTimeSeconds = (int) ((System.currentTimeMillis() - model.getGameStartTime()) / 1000);
-
+                    int realTotalPlayTimeSeconds = (int) model.getTotalPlayTimeSeconds();
                     int realPlayer1Moves = model.getPlayer1Moves();
                     int realPlayer2Moves = model.getPlayer2Moves();
-
                     double realPlayer1AvgMoveTime = model.getPlayer1AvgMoveDuration();
                     double realPlayer2AvgMoveTime = model.getPlayer2AvgMoveDuration();
-
                     int realPlayer1Score = model.getPlayer1Score();
                     int realPlayer2Score = model.getPlayer2Score();
 
