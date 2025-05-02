@@ -1,88 +1,83 @@
-    package be.kdg.integration2.mvpglobal.view.gamescreen;
+package be.kdg.integration2.mvpglobal.view.gamescreen;
 
-    import be.kdg.integration2.mvpglobal.MVPMain;
-    import be.kdg.integration2.mvpglobal.model.GameStatisticsDAO;
-    import be.kdg.integration2.mvpglobal.model.GameStatisticsData;
-    import be.kdg.integration2.mvpglobal.model.MVPModel;
-    import be.kdg.integration2.mvpglobal.model.Piece;
-    import javafx.application.Application;
-    import javafx.application.Platform;
-    import javafx.scene.control.Button;
-    import javafx.stage.Stage;
+import be.kdg.integration2.mvpglobal.MVPMain;
+import be.kdg.integration2.mvpglobal.model.*;
+import javafx.application.Platform;
 
-    public class QuartoPresenter {
-        private final MVPModel model;
-        private final QuartoView view;
+public class QuartoPresenter {
+    private final MVPModel model;
+    private final QuartoView view;
+    private final GameSession gameSession;
 
-        public QuartoPresenter(MVPModel model, QuartoView view) {
-            this.model = model;
-            this.view = view;
-            view.setPresenter(this);
+    public QuartoPresenter(MVPModel model, QuartoView view) {
+        this.model = model;
+        this.view = view;
+        view.setPresenter(this);
+        updateView();
+        gameSession = new GameSession(model.getBoardObject(), model.getPlayerName(), model.getDifficulty());
+    }
+
+    public void handlePieceSelection(Piece piece) {
+        if (model.selectPiece(piece)) {
+            view.displayMessage("Piece selected! Opponent must place it.");
+            view.displaySelectedPiece(piece);
             updateView();
-        }
 
-        public void handlePieceSelection(Piece piece) {
-            if (model.selectPiece(piece)) {
-                view.displayMessage("Piece selected! Opponent must place it.");
-                view.displaySelectedPiece(piece);
-                updateView();
-            } else {
-                view.displayMessage("Invalid selection! Choose another.");
+            // ✅ Automatically let the AI place the piece and continue the game
+            if (!model.isPlayerOneTurn()) {
+                model.getBoardObject().setAvailablePieces(model.getAvailablePieces());
+                System.out.println("Available pieces: " + model.getBoard().getAvailablePieces().size());
+
+                playAITurn();
+                System.out.println("AI placing piece: " + move.getPiece());
+                System.out.println("Row: " + move.getRow() + ", Col: " + move.getCol());
             }
-        }
 
-        public void handleMove(int row, int col) {
-            if (model.placePiece(row, col)) {
-                updateView();
-
-                if (model.checkWinCondition()) {
-                    view.displayMessage("Game Over! " + (model.isPlayerOneTurn() ? "AI" : model.getPlayerName()) + " Wins!");
-
-
-                    String realWinnerName = model.isPlayerOneTurn() ? "AI" : model.getPlayerName();
-                    System.out.println("Game saved to DB with winner: " + realWinnerName);
-                    int realTotalPlayTimeSeconds = (int) model.getTotalPlayTimeSeconds();
-                    int realPlayer1Moves = model.getPlayer1Moves();
-                    int realPlayer2Moves = model.getPlayer2Moves();
-                    double realPlayer1AvgMoveTime = model.getPlayer1AvgMoveDuration();
-                    double realPlayer2AvgMoveTime = model.getPlayer2AvgMoveDuration();
-                    int realPlayer1Score = model.getPlayer1Score();
-                    int realPlayer2Score = model.getPlayer2Score();
-
-                    GameStatisticsData data = new GameStatisticsData(
-                            realWinnerName,
-                            realTotalPlayTimeSeconds,
-                            realPlayer1Moves,
-                            realPlayer2Moves,
-                            realPlayer1AvgMoveTime,
-                            realPlayer2AvgMoveTime,
-                            realPlayer1Score,
-                            realPlayer2Score
-                    );
-
-                    GameStatisticsDAO dao = new GameStatisticsDAO();
-                    dao.saveGameStatistics(data);
-
-                    MVPMain.openGameStatisticsStage();
-                } else {
-                    view.displayMessage((model.isPlayerOneTurn() ? "Player 1" : "Player 2") + ", select a piece!");
-                }
-            } else {
-                view.displayMessage("Invalid move! Try again.");
-            }
-        }
-
-        public void resetGame() {
-            model.resetGame();
-            updateView();
-            view.displaySelectedPiece(null);
-            view.displayMessage("Game reset! Player 1, select a piece.");
-        }
-
-        private void updateView() {
-            Platform.runLater(() -> {
-                view.displayBoard(model.getBoard());
-                view.updatePieceSelection(model.getAvailablePieces());
-            });
+        } else {
+            view.displayMessage("Invalid selection! Choose another.");
         }
     }
+
+    private void playAITurn() {
+        // Give board current available pieces (this is critical!)
+        model.getBoardObject().setAvailablePieces(model.getAvailablePieces());
+
+        // AI plays turn
+        GameSession gameSession = new GameSession(model.getBoardObject(), model.getPlayerName(), model.getDifficulty());
+
+        // Play the move with the selected piece
+        gameSession.playAITurn(model.getSelectedPiece());
+
+        // Update model board with AI move result (optional if board reference is the same)
+
+        updateView();
+
+        // Check if AI won
+        if (model.getBoardObject().isWinningMove()) {
+            view.displayMessage("Game Over! AI wins!");
+            return;
+        }
+
+        // If not, show player it's their turn
+        view.displayMessage("Your turn! Place the given piece and select a new piece for AI.");
+    }
+
+    public void handleMove(int row, int col) {
+        view.displayMessage("You don't need to place manually! AI places automatically.");
+    }
+
+    public void resetGame() {
+        model.resetGame();
+        updateView();
+        view.displaySelectedPiece(null);
+        view.displayMessage("Game reset! Player 1, select a piece.");
+    }
+
+    private void updateView() {
+        Platform.runLater(() -> {
+            view.displayBoard(model.getBoard());
+            view.updatePieceSelection(model.getAvailablePieces());
+        });
+    }
+}
+

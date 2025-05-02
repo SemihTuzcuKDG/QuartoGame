@@ -15,7 +15,9 @@ public class MainScreenView extends BorderPane  {
     private MenuItem infoMI;
     private Button testButton;
     private UISettings uiSettings;
-
+    private Button easyButton;
+    private Button mediumButton;
+    private Button hardButton;
     private Button startGameButton;
     private Button rulesButton;
     private Label playerNameLabel;
@@ -33,9 +35,12 @@ public class MainScreenView extends BorderPane  {
         startGameButton = new Button("Start Game");
         rulesButton = new Button("Game Rules");
         leaderboardButton = new Button("Leaderboard");
-
-
-
+        easyButton = new Button("Easy");
+        mediumButton = new Button("Medium");
+        hardButton = new Button("Hard");
+        easyButton.setVisible(false);
+        mediumButton.setVisible(false);
+        hardButton.setVisible(false);
         this.exitMI = new MenuItem("Exit");
         this.saveMI = new MenuItem("Save");
         this.loadMI = new MenuItem("Load");
@@ -49,26 +54,29 @@ public class MainScreenView extends BorderPane  {
     }
 
     private void layoutNodes() {
-        Menu menuFile = new Menu("File",null,loadMI, saveMI, new SeparatorMenuItem(), settingsMI, new SeparatorMenuItem(),exitMI);
-        Menu menuHelp = new Menu("Help",null, aboutMI, infoMI);
-        MenuBar menuBar = new MenuBar(menuFile,menuHelp);
+        Menu menuFile = new Menu("File", null, loadMI, saveMI, new SeparatorMenuItem(), settingsMI, new SeparatorMenuItem(), exitMI);
+        Menu menuHelp = new Menu("Help", null, aboutMI, infoMI);
+        MenuBar menuBar = new MenuBar(menuFile, menuHelp);
         setTop(menuBar);
         setBottom(testButton);
 
-        VBox centerBox = new VBox(20,startGameButton);
+        VBox centerBox = new VBox(10, playerNameLabel, startGameButton, easyButton, mediumButton, hardButton, rulesButton, leaderboardButton);
         centerBox.setAlignment(Pos.CENTER);
-        setCenter(centerBox);
 
-        centerBox.getChildren().addAll(rulesButton,leaderboardButton);
         setCenter(centerBox);
-
     }
+
 
 
 
     public Button getLeaderboardButton() {
         return leaderboardButton;
     }
+
+    public Button getEasyButton() { return easyButton; }
+    public Button getMediumButton() { return mediumButton; }
+    public Button getHardButton() { return hardButton; }
+
 
     MenuItem getExitItem() {return exitMI;}
 

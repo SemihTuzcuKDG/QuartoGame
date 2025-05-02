@@ -2,43 +2,35 @@ package be.kdg.integration2.mvpglobal.model;
 
 public class GameSession {
 
-    ComputerPlayer computer;
-    HumanPlayer player;
-    Board board;
+    private final Board board;
+    private final ComputerPlayer ai;
+    private final HumanPlayer human;
+    private final AIDifficulty difficulty;
 
-    public GameSession () {
-        this.board = new Board();
-        this.player = new HumanPlayer();
-        this.computer = new ComputerPlayer();
-        //...
-    }
-    public void play(){
-        //...
-
-        // determine move AI:
-        Move move = computer.getMove(this);
-
-
+    public GameSession(Board board, String playerName, AIDifficulty difficulty) {
+        this.board = board;
+        this.human = new HumanPlayer(playerName);
+        this.difficulty = difficulty;
+        this.ai = new ComputerPlayer(difficulty);
     }
 
-    public Board getBoard() {
-        return board;
-    }
+    public void playAITurn(Piece pieceGivenByPlayer) {
+        board.placePiece(pieceGivenByPlayer);
 
+        if (board.isWinningMove()) {
+            board.setWinner(ai);
+            return;
+        }
 
-    public HumanPlayer getPlayer() {
-        return player;
-    }
+        Move move = ai.getMove(board);
+        board.placePiece(move.getPiece());
 
-    public ComputerPlayer getComputer() {
-        return computer;
-    }
+        if (board.isWinningMove()) {
+            board.setWinner(ai);
+            return;
+        }
 
-    public boolean isGameOver() {
-        return board.isGame0ver();
-    }
-
-    public String getWinner() {
-        return board.getWinner();
+        Piece pieceForPlayer = ai.selectPieceForOpponent(board);
+        board.setSelectedPiece(pieceForPlayer);
     }
 }
